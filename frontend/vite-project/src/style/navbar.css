@@ -1,0 +1,8 @@
+.nav-link.active {
+  color: var(--bs-primary) !important;
+  font-weight: 700;
+}
+
+.nav-link:hover {
+  color: var(--bs-primary);
+}

@@ -1,0 +1,27 @@
+.transition-up {
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.transition-up:hover {
+  transform: translateY(-10px);
+}
+
+.ls-2 {
+  letter-spacing: 2px;
+}
+
+.border-dashed {
+  border: 2px dashed #dee2e6 !important;
+}
+
+.hover-shadow:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.hover-lift:hover .card-img-top {
+  transform: scale(1.1);
+}
+
+.card {
+  overflow: hidden; /* Keeps the scaling image inside the card boundaries */
+}

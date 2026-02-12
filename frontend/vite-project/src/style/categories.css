@@ -1,0 +1,33 @@
+.category-img-wrapper {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.category-img-wrapper img {
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.category-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.4),
+    rgba(0, 0, 0, 0.05)
+  );
+}
+
+.category-card {
+  transition: all 0.25s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+}
+
+.category-card:hover img {
+  transform: scale(1.08);
+}
