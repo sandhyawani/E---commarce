@@ -33,5 +33,5 @@ This project allows users to browse products by categories, add items to cart, a
 
 ---
 
-## Project Structure
+
 
