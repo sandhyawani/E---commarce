@@ -13,9 +13,7 @@ export default function ProductDetails() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const { data } = await api.get(
-          `/api/products/${id}`
-        );
+        const { data } = await api.get(`/api/products/${id}`);
         setProduct(data);
       } catch (error) {
         console.error("Error loading product", error);
@@ -36,6 +34,15 @@ export default function ProductDetails() {
   }
 
   const qty = cart.find((item) => item._id === product._id)?.qty || 0;
+
+  let stockBadge = null;
+  if (product.stock === 0) {
+    stockBadge = <span className="badge bg-danger-subtle text-danger mb-2 px-3 py-2 rounded-pill small">Out of Stock</span>;
+  } else if (product.stock <= 3) {
+    stockBadge = <span className="badge bg-warning-subtle text-dark mb-2 px-3 py-2 rounded-pill small">Only {product.stock} left</span>;
+  } else {
+    stockBadge = <span className="badge bg-success-subtle text-success mb-2 px-3 py-2 rounded-pill small">Available in Stock</span>;
+  }
 
   return (
     <div className="container py-5">
@@ -59,18 +66,16 @@ export default function ProductDetails() {
         </div>
         <div className="col-md-6 offset-md-1 d-flex flex-column justify-content-start pt-3">
           <div className="mb-3">
-            <span className="badge bg-success-subtle text-success mb-2 px-3 py-2 rounded-pill small">
-              Available in Stock
-            </span>
+            {stockBadge}
             <h3 className="fw-bold text-dark mb-2">{product.name}</h3>
             
             <div className="d-flex align-items-center gap-2 mb-2">
-              <span className="text-warning small">★★★★☆</span>
+              <span className="text-warning small">?????</span>
               <span className="text-muted small" style={{ fontSize: "0.85rem" }}>(42 reviews)</span>
             </div>
 
             <h4 className="text-primary fw-bold mb-3">
-              ₹ {product.price}
+              ? {product.price}
             </h4>
             
             <p className="text-muted" style={{ fontSize: "1rem", lineHeight: "1.5" }}>
@@ -81,7 +86,7 @@ export default function ProductDetails() {
           <hr className="my-3 text-muted opacity-25" />
           <div className="d-flex flex-column gap-2" style={{ maxWidth: "400px" }}>
             {qty === 0 ? (
-              <button
+              <button disabled={product.stock === 0}
                 className="btn btn-outline-dark w-100 rounded-2 py-2 fw-semibold"
                 onClick={() => addToCart(product)}
               >
@@ -96,10 +101,10 @@ export default function ProductDetails() {
                     onClick={() => decreaseQty(product._id)}
                     style={{ fontSize: "1.1rem" }}
                   >
-                    −
+                    -
                   </button>
                   <span className="fw-bold px-2">{qty}</span>
-                  <button
+                  <button disabled={qty >= product.stock}
                     className="btn btn-link text-dark text-decoration-none px-2 py-0"
                     onClick={() => increaseQty(product._id)}
                     style={{ fontSize: "1.1rem" }}
@@ -109,7 +114,7 @@ export default function ProductDetails() {
                 </div>
               </div>
             )}
-            <button
+            <button disabled={product.stock === 0}
               className="btn btn-primary w-100 rounded-2 py-2 fw-semibold shadow-sm"
               onClick={() => {
                 const user = localStorage.getItem("user");
@@ -117,7 +122,7 @@ export default function ProductDetails() {
                   navigate("/login");
                   return;
                 }
-                addToCart(product);
+                if (qty === 0) addToCart(product);
                 navigate("/checkout");
               }}
             >

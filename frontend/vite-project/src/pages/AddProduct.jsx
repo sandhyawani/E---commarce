@@ -8,11 +8,12 @@ export default function AddProduct() {
     price: "",
     image: "",
     desc: "",
+    stock: "",
   });
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!data.name || !data.category || !data.price) {
-      alert("Please fill Name, Category and Price");
+    if (!data.name || !data.category || !data.price || data.stock === "") {
+      alert("Please fill Name, Category, Price, and Stock");
       return;
     }
     try {
@@ -20,11 +21,12 @@ export default function AddProduct() {
         name: data.name,
         category: data.category,
         price: Number(data.price),
+        stock: Number(data.stock),
         image: data.image,
         desc: data.desc,
       });
       alert(res.data.message); setData({
-        name: "", category: "", price: "", image: "", desc: "",
+        name: "", category: "", price: "", stock: "", image: "", desc: "",
       });
     } catch (err) {
       alert(err.response?.data?.message || "Product not saved");
@@ -49,10 +51,13 @@ export default function AddProduct() {
                   <option value="fashion">Fashion</option>
                   <option value="kitchen">Kitchen</option>
                   <option value="beauty">Beauty</option> </select>  </div>
-              <div className="col-md-6"> <label className="form-label fw-semibold">Price (₹)</label>
-                <div className="input-group"><span className="input-group-text bg-white">₹</span>
+              <div className="col-md-3"> <label className="form-label fw-semibold">Price (?)</label>
+                <div className="input-group"><span className="input-group-text bg-white">?</span>
                   <input type="number" className="form-control bg-light" placeholder="0.00" value={data.price}
                     onChange={(e) => setData({ ...data, price: e.target.value })} />  </div> </div>
+              <div className="col-md-3"> <label className="form-label fw-semibold">Stock</label>
+                  <input type="number" className="form-control bg-light" placeholder="0" value={data.stock}
+                    onChange={(e) => setData({ ...data, stock: e.target.value })} />  </div>
               <div className="col-12"> <label className="form-label fw-semibold">Image URL</label>
                 <input type="text" className="form-control bg-light" placeholder="https://example.com/image.jpg" value={data.image}
                   onChange={(e) => setData({ ...data, image: e.target.value })} />

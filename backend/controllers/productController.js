@@ -3,7 +3,7 @@ import { Product } from "../models/Product.js";
 
 export const addProduct = async (req, res) => {
   try {
-    const { name, category, price, image, desc } = req.body;
+    const { name, category, price, stock, image, desc } = req.body;
 
     if (!name || !category || !price) {
       return res.status(400).json({ message: "All fields required " });
@@ -13,6 +13,7 @@ export const addProduct = async (req, res) => {
       name,
       category: category.toLowerCase().trim(),
       price: Number(price),
+      stock: Number(stock || 0),
       image,
       desc,
     });
@@ -75,6 +76,7 @@ export const updateProduct = async (req, res) => {
         ...req.body,
         category: req.body.category?.toLowerCase().trim(),
         price: Number(req.body.price),
+        stock: req.body.stock !== undefined ? Number(req.body.stock) : undefined,
       },
       { new: true }
     );

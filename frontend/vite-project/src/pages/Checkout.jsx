@@ -22,27 +22,17 @@ export default function Checkout() {
       return;
     }
 
-    const user = JSON.parse(localStorage.getItem("user"));
-
     try {
       await api.post(`/api/orders`, {
-        userId: user.userId,
-        items: cart.map((item) => ({
-          productId: item._id,
-          name: item.name,
-          price: item.price,
-          qty: item.qty,
-          image: item.image,
-        })),
-        totalItems,
-        totalPrice,
         paymentMethod: payment,
       });
 
+      // The backend clears the cart automatically upon successful order.
+      // But we can clear our local context state too.
       clearCart();
       navigate("/order-success");
     } catch (err) {
-      alert("Order failed");
+      alert(err.response?.data?.message || "Order failed");
     }
   };
 
@@ -109,7 +99,7 @@ export default function Checkout() {
                 {cart.map((item) => (
                   <div key={item._id} className="d-flex justify-content-between small mb-2 border-bottom pb-2">
                     <span className="text-muted">{item.name} (x{item.qty})</span>
-                    <span className="fw-medium">₹{(item.price * item.qty).toLocaleString()}</span>
+                    <span className="fw-medium">?{(item.price * item.qty).toLocaleString()}</span>
                   </div>
                 ))}
               </div>
@@ -120,7 +110,7 @@ export default function Checkout() {
               </div>
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <span className="fw-bold fs-5">Amount Payable</span>
-                <span className="fw-bold fs-3 text-success">₹{totalPrice.toLocaleString()}</span>
+                <span className="fw-bold fs-3 text-success">?{totalPrice.toLocaleString()}</span>
               </div>
 
               <button

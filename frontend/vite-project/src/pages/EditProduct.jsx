@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../api";
 
 export default function EditProduct() {
@@ -12,6 +12,7 @@ export default function EditProduct() {
     price: "",
     image: "",
     desc: "",
+    stock: "",
   });
 
   useEffect(() => {
@@ -20,126 +21,139 @@ export default function EditProduct() {
         const res = await api.get(`/api/products/${id}`);
         setData(res.data);
       } catch (err) {
-        console.error("Error fetching product:", err);
+        alert("Error loading product");
       }
     };
     fetchProduct();
   }, [id]);
 
-  const handleChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!data.name || !data.category || !data.price || data.stock === undefined) {
+      alert("Please fill Name, Category, Price, and Stock");
+      return;
+    }
+
     try {
-      await api.put(`/api/products/${id}`, data);
-      alert("Product updated successfully!");
-      navigate("/admin/products");
+      const res = await api.put(`/api/products/${id}`, {
+        ...data,
+        price: Number(data.price),
+        stock: Number(data.stock),
+      });
+      alert(res.data.message);
+      navigate("/admin/products"); 
     } catch (err) {
-      alert("Failed to update product");
+      alert(err.response?.data?.message || "Error updating product");
     }
   };
 
   return (
     <div className="container py-5">
-      <div className="d-flex align-items-center mb-4">
-        <Link to="/admin/products" className="btn btn-outline-secondary btn-sm me-3">
-          ← Back
-        </Link>
-        <h2 className="fw-bold mb-0">Edit Product</h2>
-      </div>
-
-      <div className="row g-4">
-        <div className="col-lg-8">
-          <form onSubmit={handleSubmit} className="card border-0 shadow-sm p-4">
-            <div className="row g-3">
-              <div className="col-12">
-                <label className="form-label fw-semibold">Product Name</label>
-                <input
-                  className="form-control bg-light"
-                  name="name"
-                  value={data.name}
-                  onChange={handleChange}
-                  placeholder="e.g. Premium Leather Jacket"
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label fw-semibold">Category</label>
-                <input
-                  className="form-control bg-light"
-                  name="category"
-                  value={data.category}
-                  onChange={handleChange}
-                  placeholder="Fashion"
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label fw-semibold">Price (₹)</label>
-                <input
-                  type="number"
-                  className="form-control bg-light"
-                  name="price"
-                  value={data.price}
-                  onChange={handleChange}
-                  placeholder="0.00"
-                />
-              </div>
-
-              <div className="col-12">
-                <label className="form-label fw-semibold">Image URL</label>
-                <input
-                  className="form-control bg-light"
-                  name="image"
-                  value={data.image}
-                  onChange={handleChange}
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
-
-              <div className="col-12">
-                <label className="form-label fw-semibold">desc</label>
-                <textarea
-                  className="form-control bg-light"
-                  name="desc"
-                  rows="4"
-                  value={data.desc}
-                  onChange={handleChange}
-                  placeholder="Describe the product features..."
-                />
-              </div>
-
-              <div className="col-12 pt-2">
-                <button className="btn btn-primary btn-lg w-100 shadow-sm">
-                  Save Changes
-                </button>
-              </div>
+      <div className="row justify-content-center">
+        <div className="col-md-8 col-lg-6">
+          <div className="card border-0 shadow-lg overflow-hidden">
+            <div className="bg-warning p-4 text-dark text-center">
+              <h3 className="mb-0 fw-bold">Edit Product</h3>
+              <p className="small mb-0 opacity-75">Update details for this item</p>
             </div>
-          </form>
-        </div>
-        <div className="col-lg-4">
-          <div className="card border-0 shadow-sm overflow-hidden h-100 text-center p-4 bg-light border-dashed">
-            <h6 className="text-muted text-uppercase small fw-bold mb-3">Live Preview</h6>
-            <div className="mb-3 rounded overflow-hidden shadow-sm bg-white" style={{ minHeight: "200px" }}>
-              {data.image ? (
-                <img 
-                  src={data.image} 
-                  alt="Preview" 
-                  className="img-fluid" 
-                  style={{ maxHeight: "300px", objectFit: "contain" }}
-                  onError={(e) => { e.target.src = "https://via.placeholder.com/300?text=Invalid+Image+URL"; }}
-                />
-              ) : (
-                <div className="py-5 text-muted small">No image URL provided</div>
-              )}
+
+            <div className="card-body p-4">
+              <form onSubmit={handleSubmit}>
+                <div className="row g-3">
+                  <div className="col-12">
+                    <label className="form-label fw-semibold">Product Name</label>
+                    <input
+                      type="text"
+                      className="form-control form-control-lg bg-light"
+                      value={data.name}
+                      onChange={(e) => setData({ ...data, name: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold">Category</label>
+                    <select
+                      className="form-select bg-light"
+                      value={data.category}
+                      onChange={(e) => setData({ ...data, category: e.target.value })}
+                    >
+                      <option value="">Choose...</option>
+                      <option value="electronics">Electronics</option>
+                      <option value="fashion">Fashion</option>
+                      <option value="kitchen">Kitchen</option>
+                      <option value="beauty">Beauty</option>
+                    </select>
+                  </div>
+
+                  <div className="col-md-3">
+                    <label className="form-label fw-semibold">Price (?)</label>
+                    <div className="input-group">
+                      <span className="input-group-text bg-white">?</span>
+                      <input
+                        type="number"
+                        className="form-control bg-light"
+                        value={data.price}
+                        onChange={(e) => setData({ ...data, price: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="col-md-3">
+                    <label className="form-label fw-semibold">Stock</label>
+                    <input
+                      type="number"
+                      className="form-control bg-light"
+                      value={data.stock}
+                      onChange={(e) => setData({ ...data, stock: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="col-12">
+                    <label className="form-label fw-semibold">Image URL</label>
+                    <input
+                      type="text"
+                      className="form-control bg-light"
+                      value={data.image}
+                      onChange={(e) => setData({ ...data, image: e.target.value })}
+                    />
+                    {data.image && (
+                      <div className="mt-2 text-center border rounded p-2 bg-light">
+                        <p className="small text-muted mb-1">Preview:</p>
+                        <img
+                          src={data.image}
+                          alt="Preview"
+                          style={{ maxHeight: "150px", objectFit: "contain" }}
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="col-12">
+                    <label className="form-label fw-semibold">Description</label>
+                    <textarea
+                      className="form-control bg-light"
+                      rows="3"
+                      value={data.desc || data.description} 
+                      onChange={(e) => setData({ ...data, desc: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="col-12 mt-4 d-flex gap-2">
+                    <button
+                      type="button"
+                      className="btn btn-light w-50"
+                      onClick={() => navigate("/admin/products")}
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="btn btn-warning w-50 shadow-sm fw-bold">
+                      <i className="bi bi-save me-2"></i> Update Product
+                    </button>
+                  </div>
+                </div>
+              </form>
             </div>
-            <h5 className="fw-bold mb-1">{data.name || "Product Title"}</h5>
-            <p className="text-primary fw-bold fs-5">₹{Number(data.price).toLocaleString()}</p>
-            <p className="text-muted small px-2">
-              {data.desc ? (data.desc.substring(0, 100) + "...") : "Product desc will appear here."}
-            </p>
           </div>
         </div>
       </div>
