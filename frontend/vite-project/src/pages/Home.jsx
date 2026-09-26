@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "../components/ProductCard";
+import { API_BASE_URL } from "../config";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -8,7 +9,7 @@ export default function Home() {
   useEffect(() => {
     const fetchProducts = async () => {
       const { data } = await axios.get(
-        "http://localhost:5000/api/products"
+        `${API_BASE_URL}/api/products`
       );
       setProducts(data);
     };

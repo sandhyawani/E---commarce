@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -7,7 +8,7 @@ export default function AdminOrders() {
 
   const fetchOrders = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/orders");
+      const { data } = await axios.get(`${API_BASE_URL}/api/orders`);
       setOrders(data);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -22,7 +23,7 @@ export default function AdminOrders() {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.put(`http://localhost:5000/api/orders/${id}`, { status });
+      await axios.put(`${API_BASE_URL}/api/orders/${id}`, { status });
       fetchOrders();
     } catch (error) {
       console.error("Error updating status:", error);

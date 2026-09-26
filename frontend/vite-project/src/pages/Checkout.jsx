@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
 
 export default function Checkout() {
   const { cart, totalItems, totalPrice, clearCart } = useCart();
@@ -25,7 +26,7 @@ export default function Checkout() {
     const user = JSON.parse(localStorage.getItem("user"));
 
     try {
-      await axios.post("http://localhost:5000/api/orders", {
+      await axios.post(`${API_BASE_URL}/api/orders`, {
         userId: user.userId,
         items: cart.map((item) => ({
           productId: item._id,

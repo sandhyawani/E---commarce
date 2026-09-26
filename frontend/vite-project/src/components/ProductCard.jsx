@@ -24,8 +24,11 @@ export default function ProductCard({ item }) {
         <button className="btn btn-outline-danger p-0 px-2" onClick={() => decreaseQty(item._id)} >
           − </button> <span className="fw-bold">{qty}</span><button
             className="btn btn-outline-success text-white p-0 px-2" onClick={() => increaseQty(item._id)}> + </button>  </div>)} <button
-          className="btn btn-primary w-100 rounded-pill"
-          onClick={() => {  const user = localStorage.getItem("user");
-  if (!user) {navigate("/login");  return; }  addToCart(item);
- navigate("/checkout");  }} >  Buy Now </button> </div> </div></div>); }
+              className="btn btn-primary w-100 rounded-pill"
+              onClick={() => {
+                const user = localStorage.getItem("user");
+                if (!user) { navigate("/login"); return; } addToCart(item);
+                navigate("/checkout");
+              }} >  Buy Now </button> </div> </div></div>);
+}
 

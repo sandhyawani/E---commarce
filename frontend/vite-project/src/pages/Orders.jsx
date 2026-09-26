@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -10,7 +11,7 @@ export default function Orders() {
     const fetchOrders = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/orders/user/${user.userId}`
+          `${API_BASE_URL}/api/orders/user/${user.userId}`
         );
         setOrders(data);
       } catch (error) {

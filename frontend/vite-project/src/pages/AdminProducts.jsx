@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
@@ -8,7 +9,7 @@ export default function AdminProducts() {
 
   const fetchProducts = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/products");
+      const { data } = await axios.get(`${API_BASE_URL}/api/products`);
       setProducts(data);
     } catch (err) {
       console.error("Error fetching products", err);
@@ -22,7 +23,7 @@ export default function AdminProducts() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/products/${id}`);
       alert("Product deleted successfully");
       fetchProducts();
     } catch (err) {

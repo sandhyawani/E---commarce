@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
 
 export default function EditProduct() {
   const { id } = useParams();
@@ -17,7 +18,7 @@ export default function EditProduct() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+        const res = await axios.get(`${API_BASE_URL}/api/products/${id}`);
         setData(res.data);
       } catch (err) {
         console.error("Error fetching product:", err);
@@ -33,7 +34,7 @@ export default function EditProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/products/${id}`, data);
+      await axios.put(`${API_BASE_URL}/api/products/${id}`, data);
       alert("Product updated successfully!");
       navigate("/admin/products");
     } catch (err) {
@@ -100,7 +101,7 @@ export default function EditProduct() {
               </div>
 
               <div className="col-12">
-                <label className="form-label fw-semibold">Description</label>
+                <label className="form-label fw-semibold">desc</label>
                 <textarea
                   className="form-control bg-light"
                   name="desc"
@@ -138,7 +139,7 @@ export default function EditProduct() {
             <h5 className="fw-bold mb-1">{data.name || "Product Title"}</h5>
             <p className="text-primary fw-bold fs-5">₹{Number(data.price).toLocaleString()}</p>
             <p className="text-muted small px-2">
-              {data.desc ? (data.desc.substring(0, 100) + "...") : "Product description will appear here."}
+              {data.desc ? (data.desc.substring(0, 100) + "...") : "Product desc will appear here."}
             </p>
           </div>
         </div>

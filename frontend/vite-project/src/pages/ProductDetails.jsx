@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useCart } from "../context/CartContext";
+import { API_BASE_URL } from "../config";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -14,7 +15,7 @@ export default function ProductDetails() {
     const fetchProduct = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/products/${id}`
+          `${API_BASE_URL}/api/products/${id}`
         );
         setProduct(data);
       } catch (error) {
@@ -74,7 +75,7 @@ export default function ProductDetails() {
             </h4>
             
             <p className="text-muted" style={{ fontSize: "1rem", lineHeight: "1.5" }}>
-              {product.description}
+              {product.desc || product.description}
             </p>
           </div>
 

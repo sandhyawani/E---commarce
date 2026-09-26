@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 
 export default function EditUser() {
   const { id } = useParams();
@@ -20,7 +21,7 @@ export default function EditUser() {
   });
 
   const fetchUser = async () => {
-    const res = await axios.get(`http://localhost:5000/api/users/${id}`);
+    const res = await axios.get(`${API_BASE_URL}/api/users/${id}`);
     setForm(res.data);
   };
 
@@ -49,7 +50,7 @@ export default function EditUser() {
       return;
     }
 
-    await axios.put(`http://localhost:5000/api/users/${id}`, form);
+    await axios.put(`${API_BASE_URL}/api/users/${id}`, form);
 
     alert("User updated ");
     navigate("/users");

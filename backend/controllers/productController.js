@@ -3,7 +3,7 @@ import { Product } from "../models/Product.js";
 
 export const addProduct = async (req, res) => {
   try {
-    const { name, category, price, image, description } = req.body;
+    const { name, category, price, image, desc } = req.body;
 
     if (!name || !category || !price) {
       return res.status(400).json({ message: "All fields required " });
@@ -14,7 +14,7 @@ export const addProduct = async (req, res) => {
       category: category.toLowerCase().trim(),
       price: Number(price),
       image,
-      description,
+      desc,
     });
 
     res.status(201).json({

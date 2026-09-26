@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -8,7 +9,7 @@ export default function Users() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/users");
+      const res = await axios.get(`${API_BASE_URL}/api/users`);
       setUsers(res.data);
     } catch (err) {
       console.error("Failed to fetch users", err);
@@ -22,7 +23,7 @@ export default function Users() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/users/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/users/${id}`);
       alert("User deleted");
       fetchUsers();
     } catch (err) {

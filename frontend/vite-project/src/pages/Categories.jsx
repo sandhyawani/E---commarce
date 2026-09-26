@@ -3,6 +3,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import CategoryCard from "../components/CategoryCard";
+import { API_BASE_URL } from "../config";
 
 export default function Categories() {
   const [products, setProducts] = useState([]);
@@ -23,7 +24,7 @@ export default function Categories() {
       setLoading(true);
       try {
         const { data } = await axios.get(
-          "http://localhost:5000/api/products",
+          `${API_BASE_URL}/api/products`,
           {
             params: searchQuery ? { search: searchQuery } : {},
           }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 
 export default function Profile() {
   const [form, setForm] = useState(null);
@@ -18,7 +19,7 @@ export default function Profile() {
     const fetchProfile = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/users/profile/${user.userId}`
+          `${API_BASE_URL}/api/users/profile/${user.userId}`
         );
         setForm(data);
       } catch (err) {
@@ -39,7 +40,7 @@ export default function Profile() {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/users/profile/${form.userId}`,
+        `${API_BASE_URL}/api/users/profile/${form.userId}`,
         form
       );
 

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
 
 export default function AddProduct() {
   const [data, setData] = useState({
@@ -16,12 +17,12 @@ export default function AddProduct() {
       return;
     }
     try {
-      const res = await axios.post("http://localhost:5000/api/products/add", {
+      const res = await axios.post(`${API_BASE_URL}/api/products/add`, {
         name: data.name,
         category: data.category,
         price: Number(data.price),
         image: data.image,
-        description: data.desc,
+        desc: data.desc,
       });
       alert(res.data.message); setData({
         name: "", category: "", price: "", image: "", desc: "",
@@ -60,7 +61,7 @@ export default function AddProduct() {
                   <p className="small text-muted mb-1">Preview:</p> <img
                     src={data.image} alt="Preview" style={{ maxHeight: "150px", objectFit: "contain" }} onError={(e) => { e.target.style.display = 'none'; }} />
                 </div>)}  </div>
-              <div className="col-12"> <label className="form-label fw-semibold">Description</label>
+              <div className="col-12"> <label className="form-label fw-semibold">desc</label>
                 <textarea className="form-control bg-light" rows="3" placeholder="Tell customers more about this product..."
                   value={data.desc} onChange={(e) => setData({ ...data, desc: e.target.value })} /> </div>
               <div className="col-12 mt-4">

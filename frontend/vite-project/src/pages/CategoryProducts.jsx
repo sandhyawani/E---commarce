@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "../components/ProductCard";
+import { API_BASE_URL } from "../config";
 
 export default function CategoryProducts() {
   const { slug } = useParams();
@@ -10,7 +11,7 @@ export default function CategoryProducts() {
   useEffect(() => {
     const fetchProducts = async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/api/products?category=${slug}`
+        `${API_BASE_URL}/api/products?category=${slug}`
       );
       setProducts(data);
     };
