@@ -7,23 +7,19 @@ export default function Navbar() {
   const [search, setSearch] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-  const { totalItems } = useCart();
+  const { totalItems, clearCart } = useCart();
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     setUser(storedUser);
   }, [location.pathname]);
 
-  useEffect(() => {
-    const delay = setTimeout(() => {
-      if (search.trim()) {
-        navigate(`/categories?search=${encodeURIComponent(search)}`);
-      } else if (location.pathname.startsWith("/categories") && search === "") {
-        navigate("/categories");
-      }
-    }, 400);
-    return () => clearTimeout(delay);
-  }, [search]);
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (search.trim()) {
+      navigate(`/categories?search=${encodeURIComponent(search.trim())}`);
+    }
+  };
 
   const handleLogout = () => {
     clearCart();
@@ -31,121 +27,132 @@ export default function Navbar() {
     setUser(null);
     navigate("/login");
   };
-  const { clearCart } = useCart();
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm py-2">
+    <nav className="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm py-3">
       <div className="container">
-        <Link className="navbar-brand fw-bold fs-4 text-primary" to="/Home">
-          <i className="bi bi-shop me-2"></i>My<span className="text-dark">Shop</span>
+        {/* Logo */}
+        <Link className="navbar-brand fw-bold fs-3 text-primary d-flex align-items-center" to="/">
+          <i className="bi bi-bag-check-fill me-2 fs-2"></i>
+          <span>My<span className="text-dark">Store</span></span>
         </Link>
-        <button className="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+        
+        <button className="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
           <span className="navbar-toggler-icon"></span>
         </button>
+
         <div className="collapse navbar-collapse" id="navContent">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-            <li className="nav-item">
-              <NavLink className="nav-link fw-medium px-3" to="/categories">Categories</NavLink>
-            </li>
-           
-          </ul>
-          <div className="d-flex align-items-center me-lg-4 my-2 my-lg-0 flex-grow-1 flex-lg-grow-0" style={{ maxWidth: "400px" }}>
-            <div className="input-group bg-light rounded-pill px-3 py-1 border-0">
-              <span className="input-group-text bg-transparent border-0 text-muted">
-                <i className="bi bi-search"></i>
-              </span>
+          {/* Search Bar - Centered */}
+          <form className="d-flex mx-auto my-3 my-lg-0 w-100" style={{ maxWidth: "500px" }} onSubmit={handleSearchSubmit}>
+            <div className="input-group">
               <input
-                className="form-control bg-transparent border-0 shadow-none ps-0"
-                placeholder="Search premium products..."
+                type="text"
+                className="form-control bg-light border-0 shadow-none"
+                placeholder="Search products..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}  />
+                onChange={(e) => setSearch(e.target.value)}
+                style={{ borderRadius: "8px 0 0 8px", paddingLeft: "20px" }}
+              />
+              <button className="btn btn-primary" type="submit" style={{ borderRadius: "0 8px 8px 0", padding: "0 20px" }}>
+                <i className="bi bi-search"></i>
+              </button>
             </div>
-          </div>
-          <div className="d-flex align-items-center gap-3">
-            <Link
-              to="/cart"
-              className="position-relative text-dark text-decoration-none" >
-              <i className="bi bi-cart3 fs-4"></i>
-              {totalItems > 0 && (
-                <span
-                  className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                  style={{
-                    fontSize: "0.65rem",
-                    padding: "4px 6px",
-                  }} >
-                  {totalItems}
-                </span>
-              )}
-            </Link>
-            <div className="vr d-none d-lg-block mx-2 shadow-sm" style={{ height: '50px' }}></div>
+          </form>
+
+          {/* Right Links */}
+          <ul className="navbar-nav align-items-center gap-2 gap-lg-3">
+            <li className="nav-item d-none d-lg-block">
+              <NavLink className="nav-link fw-semibold" to="/categories">Categories</NavLink>
+            </li>
+            
+            {/* Cart Icon */}
+            <li className="nav-item mx-2">
+              <Link to="/checkout" className="position-relative text-dark text-decoration-none d-flex align-items-center gap-1">
+                <i className="bi bi-cart3 fs-4"></i>
+                <span className="fw-semibold d-lg-none">Cart</span>
+                {totalItems > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm" style={{ fontSize: "0.7rem", transform: "translate(-20%, -20%)" }}>
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
+            </li>
+
+            {/* Account Dropdown */}
             {user ? (
-              <div className="dropdown">
+              <li className="nav-item dropdown ms-lg-2">
                 <button
-                  className="btn btn-light rounded-pill dropdown-toggle d-flex align-items-center gap-2 fw-medium border shadow-sm"
+                  className="btn btn-light dropdown-toggle d-flex align-items-center gap-2 fw-semibold border-0 bg-transparent shadow-none"
                   type="button"
-                  data-bs-toggle="dropdown" >
-                  <i className="bi bi-person-circle fs-5 text-primary"></i>
-                  Hi, {user.name}
+                  data-bs-toggle="dropdown"
+                >
+                  <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style={{ width: "32px", height: "32px" }}>
+                    {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                  </div>
+                  <span className="d-none d-lg-inline text-truncate" style={{ maxWidth: "100px" }}>{user.name}</span>
                 </button>
 
-                <ul className="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                  <li>
-                    <button
-                      className="dropdown-item py-2"
-                      onClick={() => navigate("/profile")} >
-                      <i className="bi bi-person me-2"></i>Profile
-                    </button>
+                <ul className="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 mt-2">
+                  <li className="px-3 py-2 border-bottom mb-2">
+                    <div className="fw-bold">{user.name}</div>
+                    <small className="text-muted text-truncate d-block" style={{ maxWidth: "200px" }}>{user.userId}</small>
                   </li>
                   <li>
-                    <button
-                      className="dropdown-item py-2"
-                      onClick={() => navigate("/orders")}  >
-                      <i className="bi bi-bag me-2"></i>My Orders
-                    </button>
+                    <Link className="dropdown-item py-2 fw-medium" to="/profile">
+                      <i className="bi bi-person me-2 text-muted"></i>Profile
+                    </Link>
                   </li>
                   <li>
-                    <button
-                      className="dropdown-item py-2 text-danger"
-                      onClick={handleLogout} >
+                    <Link className="dropdown-item py-2 fw-medium" to="/orders">
+                      <i className="bi bi-box-seam me-2 text-muted"></i>My Orders
+                    </Link>
+                  </li>
+                  
+                  {/* Admin Links */}
+                  {user.isAdmin && (
+                    <>
+                      <li><hr className="dropdown-divider my-2" /></li>
+                      <li className="px-3 pb-1 pt-0"><small className="text-muted fw-bold" style={{fontSize: "0.7rem", textTransform: "uppercase"}}>Admin Controls</small></li>
+                      <li>
+                        <Link className="dropdown-item py-2 fw-medium" to="/admin/products">
+                          <i className="bi bi-grid me-2 text-muted"></i>Dashboard
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item py-2 fw-medium" to="/add-product">
+                          <i className="bi bi-plus-circle me-2 text-muted"></i>Add Product
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item py-2 fw-medium" to="/admin/orders">
+                          <i className="bi bi-receipt me-2 text-muted"></i>Manage Orders
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item py-2 fw-medium" to="/users">
+                          <i className="bi bi-people me-2 text-muted"></i>Users
+                        </Link>
+                      </li>
+                    </>
+                  )}
+
+                  <li><hr className="dropdown-divider my-2" /></li>
+                  <li>
+                    <button className="dropdown-item py-2 fw-medium text-danger" onClick={handleLogout}>
                       <i className="bi bi-box-arrow-right me-2"></i>Logout
                     </button>
                   </li>
-                  <li>
-                    <button
-                      className="dropdown-item py-2"
-                      onClick={() => navigate("/users")}>
-                      <i className="bi bi-people me-2"></i>Users List
-                    </button>
-                  </li>
-                  <li><hr className="dropdown-divider" /></li>
-                   <li className="nav-item">
-              <NavLink className="nav-link fw-medium px-3 text-nowrap" to="/add-product">Add Product</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link fw-medium px-3 text-nowrap" to="/admin/products">Admin</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link fw-medium px-3 text-nowrap" to="/admin/orders">Admin Orders</NavLink>
-            </li>
                 </ul>
-              </div>
+              </li>
             ) : (
-              <div className="d-flex gap-2">
-                <NavLink
-                  className="btn btn-link text-decoration-none text-dark fw-medium"
-                  to="/login">  Login
-                </NavLink>
-                <NavLink
-                  className="btn btn-primary rounded-pill px-4 shadow-sm fw-medium"
-                  to="/signup" > Signup
-                </NavLink>
-              </div> )}
-          </div>
+              <li className="nav-item d-flex gap-2 ms-lg-2 mt-3 mt-lg-0">
+                <Link className="btn btn-outline-primary fw-semibold" to="/login">Login</Link>
+                <Link className="btn btn-primary fw-semibold" to="/signup">Sign Up</Link>
+              </li>
+            )}
+          </ul>
         </div>
       </div>
-      <style>{`
-        .nav-link.active { color: var(--bs-primary) !important; font-weight: 700; }
-        .nav-link:hover { color: var(--bs-primary); }
-      `}</style>
     </nav>
   );
 }
