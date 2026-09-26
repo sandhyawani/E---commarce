@@ -1,8 +1,15 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
 
 const generateUserId = () => {
   return "UID" + Math.floor(1 + Math.random() * 100);
+};
+
+const generateToken = (userId) => {
+  return jwt.sign({ userId }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN || "7d",
+  });
 };
 
 export const signup = async (req, res) => {
@@ -53,11 +60,17 @@ export const signup = async (req, res) => {
       city,
       mobile,
       password: hashedPassword,
+      isAdmin: false, // Ensure users cannot pass isAdmin: true
     });
+
+    const token = generateToken(user.userId);
 
     return res.status(201).json({
       message: "Signup success ",
       userId: user.userId,
+      token,
+      name: `${user.firstName} ${user.lastName}`,
+      isAdmin: user.isAdmin,
     });
   } catch (err) {
     return res.status(500).json({ message: "Server error " });
@@ -75,11 +88,15 @@ export const login = async (req, res) => {
     if (!match)
       return res.status(401).json({ message: "Invalid userid / password" });
 
+    const token = generateToken(user.userId);
+
     return res.status(200).json({
       userId: user.userId,
       name: `${user.firstName} ${user.lastName}`,
       mobile: user.mobile,
       city: user.city,
+      token,
+      isAdmin: user.isAdmin,
     });
   } catch (err) {
     return res.status(500).json({ message: "Server error" });

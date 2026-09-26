@@ -26,7 +26,7 @@ export const getUserById = async (req, res) => {
 export const getUserByUserId = async (req, res) => {
   try {
     const user = await User.findOne({
-      userId: req.params.userId,
+      userId: req.user.userId,
     }).select("-password");
 
     if (!user) {
@@ -59,7 +59,7 @@ export const updateUserById = async (req, res) => {
 export const updateUserByUserId = async (req, res) => {
   try {
     const updatedUser = await User.findOneAndUpdate(
-      { userId: req.params.userId },
+      { userId: req.user.userId },
       req.body,
       { new: true }
     ).select("-password");

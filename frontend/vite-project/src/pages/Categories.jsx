@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import { useLocation } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import CategoryCard from "../components/CategoryCard";
-import { API_BASE_URL } from "../config";
 
 export default function Categories() {
   const [products, setProducts] = useState([]);
@@ -23,8 +22,8 @@ export default function Categories() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const { data } = await axios.get(
-          `${API_BASE_URL}/api/products`,
+        const { data } = await api.get(
+          `/api/products`,
           {
             params: searchQuery ? { search: searchQuery } : {},
           }

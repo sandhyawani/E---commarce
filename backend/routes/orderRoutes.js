@@ -5,12 +5,13 @@ import {
   getUserOrders,
   updateOrderStatus,
 } from "../controllers/orderController.js";
+import { protect, admin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", createOrder);
-router.get("/", getAllOrders);
-router.get("/user/:userId", getUserOrders);
-router.put("/:id", updateOrderStatus); 
+router.post("/", protect, createOrder);
+router.get("/", protect, admin, getAllOrders);
+router.get("/my", protect, getUserOrders);
+router.put("/:id", protect, admin, updateOrderStatus); 
 
 export default router;

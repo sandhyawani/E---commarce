@@ -3,10 +3,10 @@ import { Order } from "../models/Order.js";
 // Create new order
 export const createOrder = async (req, res) => {
   try {
-    const { userId, items, totalPrice, paymentMethod } = req.body;
+    const { items, totalPrice, paymentMethod } = req.body;
 
     const order = await Order.create({
-      userId,
+      userId: req.user.userId,
       items,
       totalPrice,
       paymentMethod,
@@ -33,7 +33,7 @@ export const getAllOrders = async (req, res) => {
 export const getUserOrders = async (req, res) => {
   try {
     const orders = await Order.find({
-      userId: req.params.userId,
+      userId: req.user.userId,
     }).sort({ createdAt: -1 });
 
     res.json(orders);

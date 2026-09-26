@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import ProductCard from "../components/ProductCard";
-import { API_BASE_URL } from "../config";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const { data } = await axios.get(
-        `${API_BASE_URL}/api/products`
+      const { data } = await api.get(
+        `/api/products`
       );
       setProducts(data);
     };

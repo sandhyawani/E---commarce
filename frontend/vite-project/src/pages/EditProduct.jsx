@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import axios from "axios";
-import { API_BASE_URL } from "../config";
+import api from "../api";
 
 export default function EditProduct() {
   const { id } = useParams();
@@ -18,7 +17,7 @@ export default function EditProduct() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/products/${id}`);
+        const res = await api.get(`/api/products/${id}`);
         setData(res.data);
       } catch (err) {
         console.error("Error fetching product:", err);
@@ -34,7 +33,7 @@ export default function EditProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`${API_BASE_URL}/api/products/${id}`, data);
+      await api.put(`/api/products/${id}`, data);
       alert("Product updated successfully!");
       navigate("/admin/products");
     } catch (err) {

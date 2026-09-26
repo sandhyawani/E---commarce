@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { API_BASE_URL } from "../config";
+import api from "../api";
 
 export default function AddProduct() {
   const [data, setData] = useState({
@@ -17,7 +16,7 @@ export default function AddProduct() {
       return;
     }
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/products/add`, {
+      const res = await api.post(`/api/products/add`, {
         name: data.name,
         category: data.category,
         price: Number(data.price),

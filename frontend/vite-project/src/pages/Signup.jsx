@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { API_BASE_URL } from "../config";
+import api from "../api";
 
 const locationData = {
   India: {
@@ -100,7 +99,7 @@ export default function Signup() {
     }
 
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/auth/signup`, form);
+      const res = await api.post(`/api/auth/signup`, form);
       alert(`Signup Success Your UserId is: ${res.data.userId}`);
       navigate("/", { state: { userId: res.data.userId } });
     } catch (err) {
